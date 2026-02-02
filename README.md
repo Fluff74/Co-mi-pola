@@ -35,19 +35,19 @@ the end of February.
 
 In order to finish the game before Valentine's Day, I would need to be working on a pretty tight schedule of effectively twelve days to go from zero to one hundred, so here is my planned pipeline:
 
-**February 1st:** Create the repository and then go to sleep. I just finished a Game Jam today already.
-**February 2nd:** Create the project, and set up all of the basic functionality, such as the finite state machine, RenderTarget, palette randomizer, etc.
-**February 3rd:** Build some more basics. Import fonts, create the basic player, the player's romantic partner, buttons, and some simple ground that can be stood on.
-**February 4th:** Create a functional main menu, the ability to open the settings menu, and the base scene object for minigames.
-**February 5th:** Make five empty minigame scenes, with smooth functional transitions between each of them, and create the end screen, with the option to download the image and return to the main menu.
-**February 6th:** Create the first minigame.
-**February 7th:** Create the second minigame.
-**February 8th:** Create the third minigame.
-**February 9th:** Create the fourth minigame.
-**February 10th:** Create the fifth minigame.
-**February 11th:** Planned buffer day to finish and polish minigames, and how they play into the image generation at the end.
-**February 12th:** Implement audio, and make sure volume settings are in full working order.
-**February 13th:** Planned buffer day to polish and finalize anything that may not have been finished in prior days, and to upload the game!
-**February 14th:** Celebrate Valentine's Day :)
+**February 1st:** Create the repository and then go to sleep. I just finished a Game Jam today already.  
+**February 2nd:** Create the project, and set up all of the basic functionality, such as the finite state machine, RenderTarget, palette randomizer, etc.  
+**February 3rd:** Build some more basics. Import fonts, create the basic player, the player's romantic partner, buttons, and some simple ground that can be stood on.  
+**February 4th:** Create a functional main menu, the ability to open the settings menu, and the base scene object for minigames.  
+**February 5th:** Make five empty minigame scenes, with smooth functional transitions between each of them, and create the end screen, with the option to download the image and return to the main menu.  
+**February 6th:** Create the first minigame.  
+**February 7th:** Create the second minigame.  
+**February 8th:** Create the third minigame.  
+**February 9th:** Create the fourth minigame.  
+**February 10th:** Create the fifth minigame.  
+**February 11th:** Planned buffer day to finish and polish minigames, and how they play into the image generation at the end.  
+**February 12th:** Implement audio, and make sure volume settings are in full working order.  
+**February 13th:** Planned buffer day to polish and finalize anything that may not have been finished in prior days, and to upload the game!  
+**February 14th:** Celebrate Valentine's Day :)  
 
 Hopefully this won't need to change too much, and it's properly scoped for a team of one person to create this entire project!
