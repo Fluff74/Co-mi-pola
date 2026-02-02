@@ -18,6 +18,17 @@ namespace Co_mi_pola
         private Random _random;
         #endregion
 
+        /// <summary>
+        /// The current state that the game is in.
+        /// </summary>
+        enum GameState
+        {
+            MainMenu,
+            GameScene,
+            EndResult
+        }
+        GameState gameState;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -41,14 +52,14 @@ namespace Co_mi_pola
             _random = new();
             #endregion
 
+            gameState = GameState.MainMenu; // Start the player off on the main menu.
+
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
         }
 
         protected override void Update(GameTime gameTime)
@@ -56,7 +67,26 @@ namespace Co_mi_pola
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            switch (gameState)
+            {
+                case GameState.MainMenu:
+
+
+
+                    break;
+
+                case GameState.GameScene:
+
+
+
+                    break;
+
+                case GameState.EndResult:
+
+
+
+                    break;
+            }
 
             base.Update(gameTime);
         }
@@ -69,7 +99,26 @@ namespace Co_mi_pola
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             #endregion
 
+            switch(gameState)
+            {
+                case GameState.MainMenu:
 
+
+
+                    break;
+
+                case GameState.GameScene:
+
+
+
+                    break;
+
+                case GameState.EndResult:
+
+
+
+                    break;
+            }
 
             #region End Draw
             _spriteBatch.End();
