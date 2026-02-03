@@ -29,6 +29,12 @@ namespace Co_mi_pola
         }
         GameState gameState;
 
+        Color foregroundColor; // The color of the player, ground, and everything other than the background.
+        Color backgroundColor; // The color of the background.
+        Color[] foregroundColors; // All possible colors that can be in the foreground.
+        Color[] backgroundColors; // All possible colors that can be in the background.
+        bool swapped; // Whether or not we've swapped the color palettes. Could be a cute easter egg.
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -53,6 +59,12 @@ namespace Co_mi_pola
             #endregion
 
             gameState = GameState.MainMenu; // Start the player off on the main menu.
+
+            // Initialize the color palettes, and all color related variables.
+            foregroundColors = [new(255, 94, 94), new(255, 186, 74), new(237, 225, 90), new(134, 224, 123), new(49, 228, 235), new(62, 83, 222), new(177, 41, 204), new(222, 78, 198), new(214, 214, 214)];
+            backgroundColors = [new(64, 8, 0),    new(79, 61, 0),    new(79, 78, 0),    new(19, 69, 12),    new(0, 64, 66),    new(0, 9, 69),    new(66, 0, 79),    new(74, 0, 41),    new(26, 26, 26)];
+            swapped = false;
+            RandomizePalette(swapped);
 
             base.Initialize();
         }
@@ -130,6 +142,24 @@ namespace Co_mi_pola
             _spriteBatch.Draw(_renderTarget, new Rectangle(0, 0, 1920, 1080), Color.White);
             _spriteBatch.End();
             #endregion
+        }
+
+        /// <summary>
+        /// Randomizes the colors that are used in game. This should be called between scenes, and on game start.
+        /// </summary>
+        /// <param name="swapped"> Whether or not to swap the foreground and background color palettes, since this might be a cool easter egg. </param>
+        public void RandomizePalette(bool swapped)
+        {
+            if(swapped)
+            {
+                foregroundColor = backgroundColors[_random.Next(0, 9)];
+                backgroundColor = foregroundColors[_random.Next(0, 9)];
+            }
+            else
+            {
+                foregroundColor = foregroundColors[_random.Next(0, 9)];
+                backgroundColor = backgroundColors[_random.Next(0, 9)];
+            }
         }
     }
 }
