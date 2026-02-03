@@ -29,6 +29,11 @@ namespace Co_mi_pola
         }
         GameState gameState;
 
+        MouseState ms; // The current state of the mouse.
+        MouseState pms; // The previous state of the mouse.
+        Point mScaled; // The location of the mouse, scaled down to the resolution of the game.
+
+        SpriteFont jersey10; // The font used to write the title, and debug.
         Texture2D blockTexture; // A 1x1 pixel used to render all blocks.
 
         #region Colors
@@ -38,6 +43,8 @@ namespace Co_mi_pola
         Color[] backgroundColors; // All possible colors that can be in the background.
         bool swapped; // Whether or not we've swapped the color palettes. Could be a cute easter egg.
         #endregion
+
+        Partner partner; // The player's partner.
 
         Block floor; // The floor used on most, if not all scenes.
 
@@ -81,8 +88,12 @@ namespace Co_mi_pola
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            jersey10 = Content.Load<SpriteFont>($"MediumJersey10");
             blockTexture = Content.Load<Texture2D>($"Block");
-            floor = new Block(new Rectangle(0, 63, 128, 9), blockTexture);
+
+            partner = new(new(86, 50, 10, 13), Content.Load<Texture2D>($"Partner"));
+
+            floor = new Block(new(0, 63, 128, 9), blockTexture);
         }
 
         protected override void Update(GameTime gameTime)
@@ -90,11 +101,19 @@ namespace Co_mi_pola
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            ms = Mouse.GetState();
+            mScaled = new((int)(ms.X * (128.0 / _graphics.PreferredBackBufferWidth)), (int)(ms.Y * (72.0 / _graphics.PreferredBackBufferHeight))); // Scale the mouse position based on the resolution.
+
             switch (gameState)
             {
                 case GameState.MainMenu:
 
-
+                    partner.Update(gameTime);
+                    if(partner.ClickedFiveTimes(mScaled, SingleClick(ms, pms)))
+                    {
+                        swapped = !swapped;
+                        SwapColors();
+                    }
 
                     break;
 
@@ -111,6 +130,7 @@ namespace Co_mi_pola
                     break;
             }
 
+            pms = ms;
             base.Update(gameTime);
         }
 
@@ -127,6 +147,9 @@ namespace Co_mi_pola
                 case GameState.MainMenu:
 
                     floor.Draw(_spriteBatch, foregroundColor);
+                    partner.DrawIdle(_spriteBatch, foregroundColor);
+
+                    _spriteBatch.DrawString(jersey10, $"Co mi pola", new(1, 1), foregroundColor);
 
                     break;
 
@@ -171,6 +194,25 @@ namespace Co_mi_pola
                 foregroundColor = foregroundColors[_random.Next(0, 9)];
                 backgroundColor = backgroundColors[_random.Next(0, 9)];
             }
+        }
+
+        /// <summary>
+        /// Swap the foreground and background colors.
+        /// </summary>
+        public void SwapColors()
+        {
+            (backgroundColor, foregroundColor) = (foregroundColor, backgroundColor);
+        }
+
+        /// <summary>
+        /// Checks to see if the player has clicked this frame.
+        /// </summary>
+        /// <param name="ms"> The current state of the mouse. </param>
+        /// <param name="pms"> The previous state of the mouse. </param>
+        /// <returns> Whether or not the player clicked this frame. </returns>
+        public static bool SingleClick(MouseState ms, MouseState pms)
+        {
+            return ms.LeftButton == ButtonState.Released && pms.LeftButton == ButtonState.Pressed;
         }
     }
 }
