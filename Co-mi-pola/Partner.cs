@@ -15,12 +15,15 @@ namespace Co_mi_pola
         /// </summary>
         public Rectangle Hitbox { get; set; } = hitbox;
 
-        private Rectangle firstFrame = new(0, 0, 10, 13);
+        // All of the information needed to animate the partner.
+        private readonly Rectangle firstFrame = new(0, 0, 10, 13);
         private Rectangle source = new(0, 0, 10, 13);
         private int curFrame = 0;
         private readonly int totalFrames = 1;
         private double frameTimer = 0.0;
         private readonly double framesPerSecond = 1.0;
+
+        // The total times that the partner has been clicked on. Needed for palette swap easter egg.
         private ushort totalClicks;
 
         /// <summary>
