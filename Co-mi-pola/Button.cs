@@ -43,11 +43,11 @@ namespace Co_mi_pola
                 // Check if they're holding down on the button.
                 if(holding)
                 {
-                    sb.Draw(hovered, hitbox, color);
+                    sb.Draw(held, hitbox, color);
                 }
                 else
                 {
-                    sb.Draw(held, hitbox, color);
+                    sb.Draw(hovered, hitbox, color);
                 }
             }
 

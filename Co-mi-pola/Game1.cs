@@ -29,6 +29,8 @@ namespace Co_mi_pola
         }
         GameState gameState;
 
+        KeyboardState kb; // The current state of the keyboard.
+        KeyboardState pkb; // The previous state of the keyboard.
         MouseState ms; // The current state of the mouse.
         MouseState pms; // The previous state of the mouse.
         Point mScaled; // The location of the mouse, scaled down to the resolution of the game.
@@ -44,9 +46,16 @@ namespace Co_mi_pola
         bool swapped; // Whether or not we've swapped the color palettes. Could be a cute easter egg.
         #endregion
 
+        Player player; // The player!!!
         Partner partner; // The player's partner.
 
         Block floor; // The floor used on most, if not all scenes.
+        Block test;
+
+        Vector2 logoPosition; // Where the logo is being written from.
+        Button startButton; // Button used to start the game.
+        Button settingsButton; // Button used to open settings.
+        Button exitButton; // Button used to close the game.
 
         public Game1()
         {
@@ -81,6 +90,8 @@ namespace Co_mi_pola
             RandomizePalette(swapped);
             #endregion
 
+            logoPosition = new(36, 13);
+
             base.Initialize();
         }
 
@@ -91,16 +102,23 @@ namespace Co_mi_pola
             jersey10 = Content.Load<SpriteFont>($"MediumJersey10");
             blockTexture = Content.Load<Texture2D>($"Block");
 
+            player = new(new(3, 50, 9, 13), Content.Load<Texture2D>($"Player"));
             partner = new(new(86, 50, 10, 13), Content.Load<Texture2D>($"Partner"));
 
             floor = new Block(new(0, 63, 128, 9), blockTexture);
+            test = new Block(new(70, 45, 9, 2), blockTexture);
+
+            startButton = new Button(new(40, 40, 8, 8), Content.Load<Texture2D>($"Buttons/StartButtonIdle"), Content.Load<Texture2D>($"Buttons/StartButtonHover"), Content.Load<Texture2D>($"Buttons/StartButtonHeld"));
+            settingsButton = new Button(new(60, 40, 8, 8), Content.Load<Texture2D>($"Buttons/SettingsButtonIdle"), Content.Load<Texture2D>($"Buttons/SettingsButtonHover"), Content.Load<Texture2D>($"Buttons/SettingsButtonHeld"));
+            exitButton = new Button(new(80, 40, 8, 8), Content.Load<Texture2D>($"Buttons/ExitButtonIdle"), Content.Load<Texture2D>($"Buttons/ExitButtonHover"), Content.Load<Texture2D>($"Buttons/ExitButtonHeld"));
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (kb.IsKeyDown(Keys.Escape))
                 Exit();
 
+            kb = Keyboard.GetState();
             ms = Mouse.GetState();
             mScaled = new((int)(ms.X * (128.0 / _graphics.PreferredBackBufferWidth)), (int)(ms.Y * (72.0 / _graphics.PreferredBackBufferHeight))); // Scale the mouse position based on the resolution.
 
@@ -108,8 +126,24 @@ namespace Co_mi_pola
             {
                 case GameState.MainMenu:
 
+                    if(startButton.Update(mScaled, ms, pms) || SingleKeyPress(Keys.Enter))
+                    {
+                        gameState = GameState.GameScene;
+                    }
+
+                    if(settingsButton.Update(mScaled, ms, pms))
+                    {
+
+                    }
+
+                    // Closes the game.
+                    if(exitButton.Update(mScaled, ms, pms))
+                    {
+                        Exit();
+                    }
+
                     partner.Update(gameTime);
-                    if(partner.ClickedFiveTimes(mScaled, SingleClick(ms, pms)))
+                    if(partner.ClickedFiveTimes(mScaled, SingleClick()))
                     {
                         swapped = !swapped;
                         SwapColors();
@@ -119,7 +153,9 @@ namespace Co_mi_pola
 
                 case GameState.GameScene:
 
-
+                    player.Update(gameTime, kb, pkb);
+                    player.HandleCollisions(floor.Hitbox);
+                    player.HandleCollisions(test.Hitbox);
 
                     break;
 
@@ -130,6 +166,7 @@ namespace Co_mi_pola
                     break;
             }
 
+            pkb = kb;
             pms = ms;
             base.Update(gameTime);
         }
@@ -146,16 +183,24 @@ namespace Co_mi_pola
             {
                 case GameState.MainMenu:
 
+                    startButton.Draw(_spriteBatch, foregroundColor);
+                    settingsButton.Draw(_spriteBatch, foregroundColor);
+                    exitButton.Draw(_spriteBatch, foregroundColor);
+
                     floor.Draw(_spriteBatch, foregroundColor);
+
                     partner.DrawIdle(_spriteBatch, foregroundColor);
 
-                    _spriteBatch.DrawString(jersey10, $"Co mi pola", new(1, 1), foregroundColor);
+                    _spriteBatch.DrawString(jersey10, $"Co mi pola", logoPosition, foregroundColor);
 
                     break;
 
                 case GameState.GameScene:
 
+                    floor.Draw(_spriteBatch, foregroundColor);
+                    test.Draw(_spriteBatch, foregroundColor);
 
+                    player.Draw(_spriteBatch, foregroundColor);
 
                     break;
 
@@ -207,12 +252,20 @@ namespace Co_mi_pola
         /// <summary>
         /// Checks to see if the player has clicked this frame.
         /// </summary>
-        /// <param name="ms"> The current state of the mouse. </param>
-        /// <param name="pms"> The previous state of the mouse. </param>
         /// <returns> Whether or not the player clicked this frame. </returns>
-        public static bool SingleClick(MouseState ms, MouseState pms)
+        public bool SingleClick()
         {
             return ms.LeftButton == ButtonState.Released && pms.LeftButton == ButtonState.Pressed;
+        }
+
+        /// <summary>
+        /// Checks to see if a key has been pressed once.
+        /// </summary>
+        /// <param name="key"> The key we're checking. </param>
+        /// <returns> Whether or not the key was pressed. </returns>
+        public bool SingleKeyPress(Keys key)
+        {
+            return kb.IsKeyDown(key) && pkb.IsKeyUp(key);
         }
     }
 }
